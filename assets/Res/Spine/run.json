@@ -1,0 +1,112 @@
+{
+    "skeleton": {
+        "hash": "QZqLnlWANmICc1/5up5w22b+v1A",
+        "spine": "3.5.49",
+        "width": 0,
+        "height": 0,
+        "images": "./image/"
+    },
+    "bones": [
+        {
+            "name": "root"
+        }
+    ],
+    "slots": [
+        {
+            "name": "J0000",
+            "bone": "root"
+        }
+    ],
+    "skins": {
+        "default": {
+            "J0000": {
+                "J0020": {
+                    "width": 515,
+                    "height": 515
+                },
+                "J0021": {
+                    "width": 515,
+                    "height": 515
+                },
+                "J0022": {
+                    "width": 515,
+                    "height": 515
+                },
+                "J0023": {
+                    "width": 515,
+                    "height": 515
+                },
+                "J0024": {
+                    "width": 515,
+                    "height": 515
+                },
+                "J0025": {
+                    "width": 515,
+                    "height": 515
+                },
+                "J0026": {
+                    "width": 515,
+                    "height": 515
+                },
+                "J0027": {
+                    "width": 515,
+                    "height": 515
+                }
+            }
+        }
+    },
+    "events": {
+        "attack": {},
+        "back": {},
+        "hit": {},
+        "hit_num3": {},
+        "move": {},
+        "shake_point": {}
+    },
+    "animations": {
+        "run": {
+            "slots": {
+                "J0000": {
+                    "attachment": [
+                        {
+                            "time": 0,
+                            "name": "J0020"
+                        },
+                        {
+                            "time": 0.0667,
+                            "name": "J0021"
+                        },
+                        {
+                            "time": 0.1333,
+                            "name": "J0022"
+                        },
+                        {
+                            "time": 0.2333,
+                            "name": "J0023"
+                        },
+                        {
+                            "time": 0.3333,
+                            "name": "J0024"
+                        },
+                        {
+                            "time": 0.4,
+                            "name": "J0025"
+                        },
+                        {
+                            "time": 0.4667,
+                            "name": "J0026"
+                        },
+                        {
+                            "time": 0.5667,
+                            "name": "J0027"
+                        },
+                        {
+                            "time": 0.6667,
+                            "name": "J0020"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
