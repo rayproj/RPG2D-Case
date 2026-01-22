@@ -1,0 +1,33 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: PostProcess_VS:vert
+      frag: PP_Default_FS:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+}%
+
+CCProgram PP_Default_FS %{
+  precision highp float;
+
+  in vec2 v_uv0;
+
+  uniform sampler2D colorTexture;
+
+  vec4 frag () {
+    vec4 o = texture(colorTexture, v_uv0);
+    float gray  = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
+    o.r = o.g = o.b = gray;
+    return o;
+  }
+}%

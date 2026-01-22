@@ -1,0 +1,86 @@
+// Copyright (c) 2017-2020 Xiamen Yaji Software Co., Ltd.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: PostProcess_VS:vert
+      frag: PP_Outline_FS:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+}%
+
+CCProgram PP_Outline_FS %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+
+  in vec2 v_uv0;
+
+  uniform sampler2D colorTexture;
+  uniform sampler2D depthTexture;
+  uniform sampler2D normalTexture;
+
+  vec4 frag () {
+    vec2 uv0 = v_uv0;
+    vec4 o = texture(colorTexture, uv0);
+
+    float uStep = cc_screenSize.z;
+    float vStep = cc_screenSize.w;
+    float width = 1.0;
+    vec2 uv1 = vec2(0.0, vStep) * width;
+    vec2 uv2 = vec2(0.0, -vStep) * width;
+    vec2 uv3 = vec2(-uStep, 0.0) * width;
+    vec2 uv4 = vec2(uStep, 0.0) * width;
+    vec2 uv5 = vec2(-uStep, -vStep) * width;
+    vec2 uv6 = vec2(uStep, vStep) * width;
+    vec2 uv7 = vec2(-uStep, vStep) * width;
+    vec2 uv8 = vec2(uStep, -vStep) * width;
+
+    // 深度差异
+    float depth0 = texture(depthTexture, uv0 + uv1).r;
+    float depth1 = texture(depthTexture, uv0 + uv2).r;
+    float depth2 = texture(depthTexture, uv0 + uv3).r;
+    float depth3 = texture(depthTexture, uv0 + uv4).r;
+    float depth4 = texture(depthTexture, uv0 + uv5).r;
+    float depth5 = texture(depthTexture, uv0 + uv6).r;
+    float depth6 = texture(depthTexture, uv0 + uv7).r;
+    float depth7 = texture(depthTexture, uv0 + uv8).r;
+    float depthEdge = abs(depth0 - depth1) + abs(depth2 - depth3) 
+            + abs(depth4 - depth5) + abs(depth6 - depth7);
+    depthEdge = clamp(depthEdge * 10.0, 0.0, 1.0);
+
+    // 法线差异
+    vec3 normal0 = normalize(texture(normalTexture, uv0).xyz);
+    vec3 normal1 = normalize(texture(normalTexture, uv0 + uv1).xyz);
+    vec3 normal2 = normalize(texture(normalTexture, uv0 + uv2).xyz);
+    vec3 normal3 = normalize(texture(normalTexture, uv0 + uv3).xyz);
+    vec3 normal4 = normalize(texture(normalTexture, uv0 + uv4).xyz);
+    vec3 normal5 = normalize(texture(normalTexture, uv0 + uv5).xyz);
+    vec3 normal6 = normalize(texture(normalTexture, uv0 + uv6).xyz);
+    vec3 normal7 = normalize(texture(normalTexture, uv0 + uv7).xyz);
+    vec3 normal8 = normalize(texture(normalTexture, uv0 + uv8).xyz);
+    float normalEdge = max(
+      max(1.0 - dot(normal1, normal0), 1.0 - dot(normal2, normal0)),
+      max(1.0 - dot(normal3, normal0), 1.0 - dot(normal4, normal0))
+    );
+    // normalEdge = max(
+    //   normalEdge, max(
+    //     max(1.0 - dot(normal5, normal0), 1.0 - dot(normal6, normal0)),
+    //     max(1.0 - dot(normal7, normal0), 1.0 - dot(normal8, normal0))
+    //   )
+    // );
+    normalEdge = clamp(normalEdge, 0.0, 1.0);
+
+    float edge = max(depthEdge, normalEdge);
+
+    // return vec4(edge, edge, edge, 1.0);
+    return mix(o, vec4(0.0, 0.0, 0.0, 1.0), edge);
+  }
+}%
